@@ -15,6 +15,7 @@ model User {
   updatedAt DateTime  @updatedAt
   Room Room?
   Player Player?
+  Round Round[]
 }
 
 model Room {
@@ -28,17 +29,29 @@ model Room {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   Players Player[]
+  Rounds Round[]
 }
 
 model Player {
   id        Int       @id @default(autoincrement())
   userId    Int       @unique
   user User           @relation(fields: [userId], references: [id])
-  roomId Int?          @unique
+  roomId Int?          
   room Room?           @relation(fields: [roomId], references: [id])
   score Int           @default(0)
   lives Int           @default(6)
-  // isTurn    Boolean   @default(false)
+  isRoundOver Boolean? @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Round {
+  id        Int       @id @default(autoincrement())
+  roomId    Int       
+  room      Room    @relation(fields: [roomId], references: [id])
+  currentWord String?
+  currentWordMasterId Int
+  currentWordMaster User @relation(fields: [currentWordMasterId],references: [id])
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }

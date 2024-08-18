@@ -1,5 +1,6 @@
 import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { CreateRoomDto } from './dto/create-room.dto';
+import { JoinRoomDto } from './dto/join-room.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { generateRandomHash } from 'src/helpers/generate-room-hash';
 import * as bcrypt from 'bcrypt';
@@ -8,6 +9,7 @@ const saltOrRounds = 10;
 @Injectable()
 export class RoomService {
   constructor(private prisma: PrismaService) {}
+  static currentWord = '';
   async createRoom(createRoomDto: CreateRoomDto, user) {
     try {
       let roomHash;
@@ -18,6 +20,7 @@ export class RoomService {
         },
       });
       if (existingRoomCreatedByUser) {
+        RoomService.currentWord = 'asd';
         delete existingRoomCreatedByUser.password;
         return {
           room: existingRoomCreatedByUser,
@@ -57,7 +60,7 @@ export class RoomService {
     }
   }
 
-  async removeRoom(id: number) {
+  async removeRoom(id: number, user) {
     try {
       const room = await this.prisma.room.findUnique({
         where: {
@@ -66,6 +69,14 @@ export class RoomService {
       });
       if (!room) {
         throw new BadRequestException('Room with given id does not exist!');
+      }
+      if (user.sub != room.creatorId) {
+        throw new BadRequestException('Sorry, you cannot delete this room!');
+      }
+      if (room.isGameStarted == true) {
+        throw new BadRequestException(
+          'Game is already in session! Cannot delete room now!',
+        );
       }
       await this.prisma.room.delete({
         where: {
@@ -78,6 +89,56 @@ export class RoomService {
         throw e;
       }
       throw new HttpException('Something went wrong while deleting room!', 500);
+    }
+  }
+
+  async joinRoom(joinRoomDto: JoinRoomDto, user) {
+    try {
+      const { password, roomHash } = joinRoomDto;
+      const roomExists = await this.prisma.room.findUnique({
+        where: {
+          roomHash: roomHash,
+        },
+      });
+      if (!roomExists) {
+        throw new BadRequestException('Room with given code does not exist!');
+      }
+      if (roomExists.password) {
+        const isMatch = await bcrypt.compare(password, roomExists.password);
+        if (!isMatch) {
+          throw new BadRequestException(
+            'Password is incorrect! Please try again!',
+          );
+        }
+      }
+      if (roomExists.playerCount >= 8) {
+        throw new BadRequestException('Player limit exceeded!');
+      }
+      await this.prisma.player.update({
+        where: {
+          id: user.sub,
+        },
+        data: {
+          roomId: roomExists.id,
+        },
+      });
+      await this.prisma.room.update({
+        where: {
+          id: roomExists.id,
+        },
+        data: {
+          playerCount: roomExists.playerCount + 1,
+        },
+      });
+      return { message: `Successfully joined ${roomExists.roomHash} room!` };
+    } catch (e) {
+      if (e) {
+        throw e;
+      }
+      throw new HttpException(
+        'Something went wrong while trying to join room!',
+        404,
+      );
     }
   }
 }
