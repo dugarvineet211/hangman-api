@@ -13,4 +13,33 @@ model User {
   password  String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  Room Room?
+  Player Player?
 }
+
+model Room {
+  id        Int       @id @default(autoincrement())
+  roomHash  String    @unique
+  creatorId Int       @unique
+  creator   User      @relation(fields: [creatorId], references: [id])
+  playerCount Int     @default(0)
+  password  String?
+  isGameStarted Boolean @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Players Player[]
+}
+
+model Player {
+  id        Int       @id @default(autoincrement())
+  userId    Int       @unique
+  user User           @relation(fields: [userId], references: [id])
+  roomId Int          @unique
+  room Room           @relation(fields: [roomId], references: [id])
+  score Int           @default(0)
+  lives Int           @default(6)
+  // isTurn    Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+

@@ -23,4 +23,14 @@ export class UserController {
       throw new HttpException(e.message, e.status);
     }
   }
+
+  // @UseGuards(AuthGuard)
+  // @Post('/demo')
+  // async demo() {
+  //   try {
+  //     return 'Hello';
+  //   } catch (e) {
+  //     throw new HttpException(e.message, e.status);
+  //   }
+  // }
 }
