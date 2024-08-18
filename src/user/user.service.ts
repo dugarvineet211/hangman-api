@@ -3,6 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { PlayerService } from 'src/player/player.service';
 const saltOrRounds = 10;
 
 @Injectable()
@@ -10,6 +11,7 @@ export class UserService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
+    private player: PlayerService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -29,6 +31,7 @@ export class UserService {
           password: hash,
         },
       });
+      await this.player.create({ userId: createdUser.id });
       delete createdUser.password;
       return createdUser;
     } catch (e) {
