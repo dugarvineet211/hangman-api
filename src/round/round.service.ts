@@ -7,7 +7,7 @@ import NO_OF_LIVES from 'src/constants/constants';
 @Injectable()
 export class RoundService {
   public static players = {};
-  public static currentWord = '';
+  public static currentRoundWord = '';
   constructor(private prisma: PrismaService) {}
 
   async startGame(roomHash, user) {
@@ -31,7 +31,7 @@ export class RoundService {
         },
       });
       for (const obj of availablePlayers) {
-        RoundService.players[obj.id] = obj;
+        RoundService.players[obj.userId] = obj;
       }
       await this.prisma.room.update({
         where: {
@@ -107,7 +107,12 @@ export class RoundService {
         if (!wordData) {
           throw new BadRequestException('Invalid word, please try again!');
         }
-        RoundService.currentWord = word;
+        RoundService.currentRoundWord = word;
+        for (const userId of Object.keys(RoundService.players)) {
+          RoundService.players[userId].guessedWord = '_'
+            .repeat(word.length)
+            .split('');
+        }
         return { hint: wordData.meanings[0].definitions[0].definition };
       }
     } catch (e) {
@@ -137,9 +142,11 @@ export class RoundService {
       if (!room.isGameStarted) {
         throw new BadRequestException('Game not started yet!');
       }
-      for (const playerId of Object.keys(RoundService.players)) {
-        RoundService.players[playerId].lives = NO_OF_LIVES;
+      for (const userId of Object.keys(RoundService.players)) {
+        RoundService.players[userId].lives = NO_OF_LIVES;
+        RoundService.players[userId].isRoundOver = false;
       }
+      RoundService.currentRoundWord = '';
     } catch (e) {
       if (e) {
         throw e;

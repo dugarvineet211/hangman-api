@@ -36,13 +36,23 @@ export class RoundController {
 
   @UseGuards(AuthGuard)
   @Post('/start-round/:roomHash')
-  async startRound(@Param() roomHash, @Request() req, @Body() body) {
+  async startRound(@Param() roomHash, @Request() req, @Body() body?) {
     try {
       return await this.roundService.startRound(
         roomHash.roomHash,
         req.user,
-        body.word,
+        body?.word,
       );
+    } catch (e) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('/start-round/:roomHash')
+  async endRound(@Param() roomHash, @Request() req) {
+    try {
+      return await this.roundService.endRound(roomHash.roomHash, req.user);
     } catch (e) {
       throw new HttpException(e.message, e.status);
     }
