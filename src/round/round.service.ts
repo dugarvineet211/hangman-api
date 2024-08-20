@@ -212,7 +212,7 @@ export class RoundService {
         `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`,
       );
       const wordData = data.data[0];
-      if (wordData || !wordData.meanings[0]) {
+      if (wordData || !wordData.meanings) {
         throw new BadRequestException('Invalid word, please try again!');
       }
       RoundService.games[roomHash].currentWord = word;
