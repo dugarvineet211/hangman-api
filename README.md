@@ -65,7 +65,7 @@ Used NestJS framework due to its easy development curve, scalability and ability
 
 ### How to test
  - Create users using the /user POST request
- - Login using the /user/login POST route, this sends back a JWT token which should be used in the Authorization header as a bearer token, eg - Bearer JWT_TOKEN
+ - Login using the /user/login POST route, this sends back a JWT token which should be used in the Authorization header as a bearer token, eg - Bearer JWT_TOKEN (note: JWT Tokens expire in 3h, this can be changed by going to `hangman-api\src\user\user.module.ts` and changing the expiresIn value in the JWTModule.registers method)
  - Create a room using /room POST request, room can also have a password
  - Join a room using /room/join-room/:roomHash POST request
  - Once room is joined, create a socket.io request in a different tab and add following events and enable them to listen for these events (do this for every user/connected client)
