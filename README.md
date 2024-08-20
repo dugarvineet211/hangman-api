@@ -64,6 +64,7 @@ Used NestJS framework due to its easy development curve, scalability and ability
 
 
 ### How to test
+##### The Swagger documentation can be found at `http://localhost:3000/api#/`
  - Create users using the /user POST request
  - Login using the /user/login POST route, this sends back a JWT token which should be used in the Authorization header as a bearer token, eg - Bearer JWT_TOKEN (note: JWT Tokens expire in 3h, this can be changed by going to `hangman-api\src\user\user.module.ts` and changing the expiresIn value in the JWTModule.registers method)
  - Create a room using /room POST request, room can also have a password
@@ -86,6 +87,8 @@ Used NestJS framework due to its easy development curve, scalability and ability
  - Generate a word using /round/generate-word/:roomHash POST request (can be accessed only by the current word master)
  - End a round by /round/end-current-round/:roomHash POST request (can be done by only round creator), can also be used to end the game by passing `endGame: true` in the request body
  - Make a guess by /guess/:roomHash POST request
- 
+
+##### The Swagger documentation can be found at `http://localhost:3000/api#/` 
 The Postman Collection will be in the repository for testing.
+
 
