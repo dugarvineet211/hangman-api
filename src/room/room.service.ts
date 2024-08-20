@@ -1,15 +1,21 @@
-import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  Injectable,
+  InternalServerErrorException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { JoinRoomDto } from './dto/join-room.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { generateRandomHash } from 'src/helpers/generate-room-hash';
+import { generateRandomHash } from 'src/helpers/index';
 import * as bcrypt from 'bcrypt';
+import { RoundService } from 'src/round/round.service';
 const saltOrRounds = 10;
 
 @Injectable()
 export class RoomService {
   constructor(private prisma: PrismaService) {}
-  static currentWord = '';
   async createRoom(createRoomDto: CreateRoomDto, user) {
     try {
       let roomHash;
@@ -20,7 +26,6 @@ export class RoomService {
         },
       });
       if (existingRoomCreatedByUser) {
-        RoomService.currentWord = 'asd';
         delete existingRoomCreatedByUser.password;
         return {
           room: existingRoomCreatedByUser,
@@ -114,6 +119,9 @@ export class RoomService {
       if (roomExists.playerCount >= 8) {
         throw new BadRequestException('Player limit exceeded!');
       }
+      if (roomExists.isGameStarted) {
+        throw new BadRequestException('Sorry game has already started!');
+      }
       await this.prisma.player.update({
         where: {
           id: user.sub,
@@ -139,6 +147,94 @@ export class RoomService {
         'Something went wrong while trying to join room!',
         404,
       );
+    }
+  }
+
+  async getRoomByCreatorId(user) {
+    try {
+      const room = await this.prisma.room.findUnique({
+        where: {
+          creatorId: user.sub,
+        },
+      });
+      if (!room) {
+        return {
+          message:
+            'Sorry! No rooms created by you! Please create one and try again!',
+        };
+      }
+      return room;
+    } catch (e) {
+      throw new ServiceUnavailableException('Something went wrong!');
+    }
+  }
+
+  async getRoomByRoomHash(roomHash) {
+    try {
+      const room = await this.prisma.room.findUnique({
+        where: {
+          roomHash: roomHash,
+        },
+      });
+      if (!room) {
+        throw new BadRequestException('Room not found! Cannot start game!');
+      }
+      return room;
+    } catch (e) {
+      if (e) {
+        throw e;
+      }
+      throw new InternalServerErrorException('Something went wrong!');
+    }
+  }
+
+  async exitRoom(roomHash, user) {
+    try {
+      await this.getRoomByRoomHash(roomHash);
+      if (
+        RoundService.games &&
+        RoundService.games[roomHash] &&
+        RoundService.games[roomHash].playerDetails
+      ) {
+        RoundService.games[roomHash].playerIds = RoundService.games[
+          roomHash
+        ].playerIds.filter((el) => el !== user.sub);
+        delete RoundService.games[roomHash].playerDetails[user.sub];
+      }
+      await this.prisma.player.update({
+        where: {
+          userId: user.sub,
+        },
+        data: {
+          roomId: null,
+        },
+      });
+    } catch (e) {
+      throw new InternalServerErrorException('Something went wrong!');
+    }
+  }
+
+  async getRoomScores(roomHash) {
+    try {
+      if (
+        RoundService.games &&
+        RoundService.games[roomHash] &&
+        RoundService.games[roomHash].playerDetails
+      ) {
+        const scores = [];
+        for (const key of Object.keys(
+          RoundService.games[roomHash].playerDetails,
+        )) {
+          const score = RoundService.games[roomHash].playerDetails[key].score;
+          const username =
+            RoundService.games[roomHash].playerDetails[key].user.username;
+          scores.push({ username: username, score: score });
+        }
+      } else {
+        return { message: 'Game not started yet! No scores to show!' };
+      }
+    } catch (e) {
+      throw new InternalServerErrorException('Something went wrong!');
     }
   }
 }

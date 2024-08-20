@@ -6,46 +6,76 @@ import { RoundService } from 'src/round/round.service';
 export class GuessService {
   constructor(private prisma: PrismaService) {}
 
-  async makeGuess(letter, user) {
+  async makeGuess(roomHash, letter, user) {
     try {
-      if (!RoundService.players[user.sub].isRoundOver) {
-        if (RoundService.currentRoundWord.includes(letter)) {
-          for (let i = 0; i < RoundService.currentRoundWord.length; i++) {
-            if (RoundService.currentRoundWord[i] == letter) {
-              RoundService.players[user.sub].guessedWord = letter;
+      if (!RoundService.games[roomHash].playerDetails[user.sub]) {
+        throw new BadRequestException('Sorry you are not a part of this room!');
+      }
+      if (!letter.length || letter.length > 1) {
+        throw new BadRequestException('Please enter a valid single letter!');
+      }
+      if (!RoundService.games[roomHash].playerDetails[user.sub].isRoundOver) {
+        if (RoundService.games[roomHash].currentWord.includes(letter)) {
+          for (
+            let i = 0;
+            i < RoundService.games[roomHash].currentWord.length;
+            i++
+          ) {
+            if (RoundService.games[roomHash].currentWord[i] == letter) {
+              RoundService.games[roomHash].playerDetails[user.sub].guessedWord[
+                i
+              ] = letter;
             }
           }
-          if (!RoundService.players[user.sub].guessedWord.includes('_')) {
-            RoundService.players[user.sub].score++;
+          if (
+            !RoundService.games[roomHash].playerDetails[
+              user.sub
+            ].guessedWord.includes('_')
+          ) {
+            RoundService.games[roomHash].playerDetails[user.sub].score++;
             return {
-              message: `You have done it! Correct guess! Your current score is ${RoundService.players[user.sub].score}`,
+              message: `You have done it! Correct guess! Your current score is ${RoundService.games[roomHash].playerDetails[user.sub].score}`,
+              score: RoundService.games[roomHash].playerDetails[user.sub].score,
+              isWordGuessed: true,
             };
           }
           return {
             message: 'Correct guess! Now guess another letter!',
-            word: RoundService.players[user.sub].guessedWord
-              .split('')
-              .join(' '),
+            word: RoundService.games[roomHash].playerDetails[
+              user.sub
+            ].guessedWord.join(' '),
+            isLetterGuessed: true,
           };
         }
-        RoundService.players[user.sub].lives--;
-        if (RoundService.players[user.sub].lives == 0) {
-          RoundService.players[user.sub].isRoundOver = true;
+        RoundService.games[roomHash].playerDetails[user.sub].lives--;
+        if (RoundService.games[roomHash].playerDetails[user.sub].lives == 0) {
+          RoundService.games[roomHash].playerDetails[user.sub].isRoundOver =
+            true;
           return {
             message:
               'Oops! You are out of tries! Please wait for the next round to begin!',
+            isTriesOver: true,
           };
         }
         return {
-          message: `Wrong guess! ${RoundService.players[user.sub].lives} tries left!`,
+          message: `Wrong guess! ${RoundService.games[roomHash].playerDetails[user.sub].lives} tries left!`,
+          word: RoundService.games[roomHash].playerDetails[
+            user.sub
+          ].guessedWord.join(' '),
+          isLetterMissed: true,
+          tries: RoundService.games[roomHash].playerDetails[user.sub].lives,
         };
       } else {
         return {
           message:
-            'You have exhausted all your tries! Please wait for the next round to begin!',
+            'The round is over for you! Please wait for the next round to begin!',
         };
       }
     } catch (e) {
+      if (e) {
+        throw e;
+      }
+      console.log(e);
       throw new BadRequestException('Something went wrong! Please try again!');
     }
   }

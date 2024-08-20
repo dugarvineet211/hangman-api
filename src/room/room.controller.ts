@@ -7,15 +7,19 @@ import {
   Request,
   UseGuards,
   HttpException,
+  Get,
 } from '@nestjs/common';
 import { RoomService } from './room.service';
-import { CreateRoomDto } from './dto/create-room.dto';
 import { AuthGuard } from 'src/guard/auth.guard';
-import { JoinRoomDto } from './dto/join-room.dto';
+import { CreateRoomDto, JoinRoomDto } from './dto/index';
+import { HangmanGateway } from 'src/gateway/hangman.gateway';
 
 @Controller('room')
 export class RoomController {
-  constructor(private readonly roomService: RoomService) {}
+  constructor(
+    private readonly roomService: RoomService,
+    private readonly gateway: HangmanGateway,
+  ) {}
 
   @UseGuards(AuthGuard)
   @Post()
@@ -37,7 +41,46 @@ export class RoomController {
   @Post('/join-room')
   async joinRoom(@Body() joinRoomDto: JoinRoomDto, @Request() req) {
     try {
-      return await this.roomService.joinRoom(joinRoomDto, req.user);
+      const res = await this.roomService.joinRoom(joinRoomDto, req.user);
+      this.gateway.server.to(joinRoomDto.roomHash).emit('joinRoom', {
+        message: `User ${req.user.username} has joined the game!`,
+      });
+      return res;
+    } catch (e) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/get-room')
+  async getRoomByCreatorId(@Request() req) {
+    try {
+      return await this.roomService.getRoomByCreatorId(req.user);
+    } catch (e) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('/exit-room/:roomHash')
+  async exitRoom(@Param() roomHash, @Request() req) {
+    try {
+      const res = await this.roomService.exitRoom(roomHash.roomHash, req.user);
+      this.gateway.server.to(roomHash.roomHash).emit('leaveRoom', {
+        message: `User ${req.user.username} has left the game!`,
+      });
+      return res;
+    } catch (e) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/get-scores/:roomHash')
+  async getRoomScores(@Param() roomHash) {
+    try {
+      console.log('sending event');
+      return await this.roomService.getRoomScores(roomHash.roomHash);
     } catch (e) {
       throw new HttpException(e.message, e.status);
     }
