@@ -36,9 +36,6 @@ model Player {
   user User           @relation(fields: [userId], references: [id])
   roomId Int?          
   room Room?           @relation(fields: [roomId], references: [id])
-  score Int           @default(0)
-  lives Int           @default(6)
-  isRoundOver Boolean? @default(false)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }

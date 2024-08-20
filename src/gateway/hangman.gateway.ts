@@ -34,11 +34,4 @@ export class HangmanGateway
       message: `${message.username} has joined the game!`,
     });
   }
-
-  @SubscribeMessage('leaveRoom')
-  onLeaveRoom(message) {
-    // if (client.in(message.roomHash)) {
-    //   client.leave(message.roomHash);
-    // }
-  }
 }

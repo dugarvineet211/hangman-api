@@ -11,6 +11,12 @@ export class GuessService {
       if (!RoundService.games[roomHash].playerDetails[user.sub]) {
         throw new BadRequestException('Sorry you are not a part of this room!');
       }
+      if (RoundService.games[roomHash].currentWordMasterId == user.sub) {
+        return {
+          message:
+            'Sorry as the current round WordMaster you cannot play this round!',
+        };
+      }
       if (!letter.length || letter.length > 1) {
         throw new BadRequestException('Please enter a valid single letter!');
       }

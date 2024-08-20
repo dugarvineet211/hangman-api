@@ -230,6 +230,7 @@ export class RoomService {
             RoundService.games[roomHash].playerDetails[key].user.username;
           scores.push({ username: username, score: score });
         }
+        return { scores: scores };
       } else {
         return { message: 'Game not started yet! No scores to show!' };
       }

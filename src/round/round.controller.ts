@@ -73,11 +73,16 @@ export class RoundController {
   @Post('/generate-word/:roomHash')
   async generateWordForGame(@Param() roomHash, @Body() body, @Request() req) {
     try {
-      return await this.roundService.generateWordForGame(
+      const res = await this.roundService.generateWordForGame(
         roomHash.roomHash,
         req.user,
         body.word,
       );
+      this.gateway.server.to(roomHash.roomHash).emit('wordGenerated', {
+        length: res.length,
+        hint: res.hint,
+      });
+      return res;
     } catch (e) {
       throw new HttpException(e.message, e.status);
     }

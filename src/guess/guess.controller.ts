@@ -35,7 +35,7 @@ export class GuessController {
 
       if (res && res.isWordGuessed) {
         this.gateway.server.to(roomHash.roomHash).emit('wordGuessed', {
-          message: `${req.user.username} guessed the word correctly! They have ${res.score} now!`,
+          message: `${req.user.username} guessed the word correctly! They have ${res.score} point now!`,
         });
       }
 

@@ -33,10 +33,7 @@ export class RoundService {
           'Sorry, cannot start the game with just 1 player!',
         );
       }
-      if (
-        RoundService.games[roomHash] &&
-        RoundService.games[roomHash].isGameStarted
-      ) {
+      if (room.isGameStarted) {
         throw new BadRequestException('Game has already started!');
       }
       const availablePlayers = await this.prisma.player.findMany({
@@ -54,12 +51,19 @@ export class RoundService {
       RoundService.games[roomHash].playerDetails = {};
       RoundService.games[roomHash].currentIndex = 0;
       RoundService.games[roomHash].isCurrentRoundStarted = false;
-      RoundService.games[roomHash].isGameStarted = true;
       for (const obj of availablePlayers) {
         RoundService.games[roomHash].playerDetails[obj.userId] = obj;
         RoundService.games[roomHash].playerDetails[obj.userId].guessedWord = '';
         RoundService.games[roomHash].playerIds.push(obj.userId);
       }
+      await this.prisma.room.update({
+        where: {
+          roomHash: roomHash,
+        },
+        data: {
+          isGameStarted: true,
+        },
+      });
       return { message: 'Game started! Lets play the first round!' };
     } catch (e) {
       if (e) {
@@ -79,18 +83,28 @@ export class RoundService {
           'Sorry, only the room creator can end the game!',
         );
       }
-      await this.prisma.player.updateMany({
-        where: {
-          id: {
-            in: RoundService.games[roomHash].playerIds,
+      if (RoundService.games[roomHash]) {
+        await this.prisma.player.updateMany({
+          where: {
+            id: {
+              in: RoundService.games[roomHash].playerIds,
+            },
           },
-        },
-        data: {
-          roomId: null,
-        },
-      });
-      delete RoundService.games[roomHash];
-      return { message: 'Game Ended! Thank you for playing!' };
+          data: {
+            roomId: null,
+          },
+        });
+        await this.prisma.room.update({
+          where: {
+            roomHash: roomHash,
+          },
+          data: {
+            isGameStarted: false,
+          },
+        });
+        delete RoundService.games[roomHash];
+        return { message: 'Game Ended! Thank you for playing!' };
+      }
     } catch (e) {
       if (e) {
         throw e;
@@ -178,7 +192,11 @@ export class RoundService {
 
   async generateWordForGame(roomHash, user, word?) {
     try {
-      if (RoundService.games[roomHash].currentWordMasterId != user.sub) {
+      console.log(RoundService.games);
+      if (
+        RoundService.games[roomHash] &&
+        RoundService.games[roomHash].currentWordMasterId != user.sub
+      ) {
         throw new BadRequestException(
           'Sorry its not your turn to generate a word for this round!',
         );
