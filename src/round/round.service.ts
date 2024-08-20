@@ -166,7 +166,7 @@ export class RoundService {
         };
       }
       if (room.creatorId != user.sub) {
-        throw new BadRequestException('Room creator can only start the round!');
+        throw new BadRequestException('Room creator can only end   the round!');
       }
       if (!room.isGameStarted) {
         throw new BadRequestException('Game not started yet!');
@@ -179,7 +179,11 @@ export class RoundService {
       }
       RoundService.games[roomHash].currentWord = '';
       RoundService.games[roomHash].isCurrentRoundStarted = false;
-      return { message: 'This round has ended! Want to play another one?' };
+      const data = await this.roomService.getRoomScores(roomHash);
+      return {
+        message: 'This round has ended! Want to play another one?',
+        scores: data.scores,
+      };
     } catch (e) {
       if (e) {
         throw e;

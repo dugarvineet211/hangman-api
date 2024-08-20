@@ -14,7 +14,6 @@ export class PlayerService {
         },
       });
     } catch (e) {
-      console.log(e);
       throw new HttpException('Could not create player!', 400);
     }
   }

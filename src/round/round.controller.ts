@@ -99,6 +99,7 @@ export class RoundController {
       );
       this.gateway.server.to(roomHash.roomHash).emit('endedRound', {
         message: 'Round has ended!',
+        scores: res.scores,
       });
       return res;
     } catch (e) {

@@ -190,7 +190,7 @@ export class RoomService {
 
   async exitRoom(roomHash, user) {
     try {
-      await this.getRoomByRoomHash(roomHash);
+      const room = await this.getRoomByRoomHash(roomHash);
       if (
         RoundService.games &&
         RoundService.games[roomHash] &&
@@ -207,6 +207,14 @@ export class RoomService {
         },
         data: {
           roomId: null,
+        },
+      });
+      await this.prisma.room.update({
+        where: {
+          roomHash: roomHash,
+        },
+        data: {
+          playerCount: room.playerCount - 1,
         },
       });
     } catch (e) {

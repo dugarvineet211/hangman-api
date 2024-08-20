@@ -1,0 +1,416 @@
+{
+	"info": {
+		"_postman_id": "1f22806f-4322-4545-8e98-398c1e25239a",
+		"name": "Hangman API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13684504"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoidmluZWV0IiwiaWF0IjoxNzIzOTgyNzY3LCJleHAiOjE3MjM5OTM1Njd9.QXdYR-3GeYFoAKMGLJyHFuTfpHTKUknRozYyYMvH7Z8",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"player6\",\r\n    \"password\": \"root\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/user/login",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"player6\",\r\n    \"password\": \"root\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/user",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Room",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsInVzZXJuYW1lIjoicGxheWVyNCIsImlhdCI6MTcyNDE0Nzk0OCwiZXhwIjoxNzI0MTU4NzQ4fQ.WziUmQ-mrboAq_-IzSQJYNCeiJ4bn9xU-zSo3nkPKAA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/room",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"room"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Leave Room",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUsInVzZXJuYW1lIjoicGxheWVyNSIsImlhdCI6MTcyNDEzMjM0OSwiZXhwIjoxNzI0MTQzMTQ5fQ.lN2UQR8iu0NawS7QUo06KqoGSDek-vVO-lV1jqQY89A",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:3000/room/exit-room/KZZ-PAE-LOG",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"room",
+						"exit-room",
+						"KZZ-PAE-LOG"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Room",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoidmluZWV0IiwiaWF0IjoxNzIzOTgyNzY3LCJleHAiOjE3MjM5OTM1Njd9.QXdYR-3GeYFoAKMGLJyHFuTfpHTKUknRozYyYMvH7Z8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/room/2",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"room",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Join room",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsInVzZXJuYW1lIjoicGxheWVyMyIsImlhdCI6MTcyNDE0NzkzNywiZXhwIjoxNzI0MTU4NzM3fQ.cqR4VlN9Jt71pFBOz78T-7z6UvLaZ-PVS0nZCZUIq-Q",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n     \"roomHash\": \"ACX-XOQ-VZB\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/room/join-room",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"room",
+						"join-room"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Start game",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoicGxheWVyMSIsImlhdCI6MTcyNDE0NzkwMCwiZXhwIjoxNzI0MTU4NzAwfQ.udkPKl3U8shlNdCtcbUZ5gE45AyeZLYzxoynE9ddP0U",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:3000/round/start-game/ACX-XOQ-VZB",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"round",
+						"start-game",
+						"ACX-XOQ-VZB"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "End game",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoicGxheWVyMSIsImlhdCI6MTcyNDAwMTUxNywiZXhwIjoxNzI0MDEyMzE3fQ.yW5LShGpzQtWEuWGk1krIQLTPDV5zZv5ZUQU565r1KE",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:3000/round/end-game/ZXB-BCE-TKA",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"round",
+						"end-game",
+						"ZXB-BCE-TKA"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Start Round",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoicGxheWVyMSIsImlhdCI6MTcyNDAwMTUxNywiZXhwIjoxNzI0MDEyMzE3fQ.yW5LShGpzQtWEuWGk1krIQLTPDV5zZv5ZUQU565r1KE",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"word\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/round/start-round/ZXB-BCE-TKA",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"round",
+						"start-round",
+						"ZXB-BCE-TKA"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "End Round",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsInVzZXJuYW1lIjoicGxheWVyNCIsImlhdCI6MTcyNDA2ODg2MiwiZXhwIjoxNzI0MDc5NjYyfQ.af2EICFnq1USrkntnumRu8sAU2yM0HDEPGige27p-gM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"endGame\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/round/end-current-round/KZZ-PAE-LOG",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"round",
+						"end-current-round",
+						"KZZ-PAE-LOG"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate Word",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsInVzZXJuYW1lIjoicGxheWVyNCIsImlhdCI6MTcyNDA1MDI4MywiZXhwIjoxNzI0MDYxMDgzfQ.sIcn6892lwrwTswe_E2Hgx7pDDqJEyPhuV9993vjvOk",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"word\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/round/generate-word/KZZ-PAE-LOG",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"round",
+						"generate-word",
+						"KZZ-PAE-LOG"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Guess",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsInVzZXJuYW1lIjoicGxheWVyNCIsImlhdCI6MTcyNDA1MDI4MywiZXhwIjoxNzI0MDYxMDgzfQ.sIcn6892lwrwTswe_E2Hgx7pDDqJEyPhuV9993vjvOk",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"letter\": \"r\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/guess/KZZ-PAE-LOG",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"guess",
+						"KZZ-PAE-LOG"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get scores",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoicGxheWVyMSIsImlhdCI6MTcyNDE0NzkwMCwiZXhwIjoxNzI0MTU4NzAwfQ.udkPKl3U8shlNdCtcbUZ5gE45AyeZLYzxoynE9ddP0U",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:3000/room/get-scores/ACX-XOQ-VZB",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"room",
+						"get-scores",
+						"ACX-XOQ-VZB"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

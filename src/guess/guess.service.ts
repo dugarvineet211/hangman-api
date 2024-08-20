@@ -81,7 +81,6 @@ export class GuessService {
       if (e) {
         throw e;
       }
-      console.log(e);
       throw new BadRequestException('Something went wrong! Please try again!');
     }
   }

@@ -79,7 +79,6 @@ export class RoomController {
   @Get('/get-scores/:roomHash')
   async getRoomScores(@Param() roomHash) {
     try {
-      console.log('sending event');
       return await this.roomService.getRoomScores(roomHash.roomHash);
     } catch (e) {
       throw new HttpException(e.message, e.status);
